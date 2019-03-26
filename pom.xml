@@ -32,6 +32,12 @@
             <version>1.10.3</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.4.5</version>
+        </dependency>
+
         <!-- 单元测试依赖 -->
         <dependency>
             <groupId>junit</groupId>

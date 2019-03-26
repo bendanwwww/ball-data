@@ -21,7 +21,7 @@ public class SohuCrawler {
                 for (Element link : links) {
                     String linkHref = link.attr("href");
                     String titleText = link.text().trim();
-                    if(!linkHref.split("\\.")[0].equals("http://pic")){
+                    if(!linkHref.split("\\.")[0].equals("http://pic")) {
                         String[] sca = getBySohuContent(linkHref);
                         if(sca != null) {
                             //ballDAO.saveGripping(titleText, sca[0], linkHref, sca[1], sca[2], "3", 0);
