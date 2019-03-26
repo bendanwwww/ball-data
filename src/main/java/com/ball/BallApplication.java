@@ -17,11 +17,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 //@EnableDiscoveryClient
 //@EnableFeignClients
-public class IpsApplication {
+public class BallApplication {
 
     public static void main(String[] args) {
 
-        SpringApplication application = new SpringApplication(IpsApplication.class);
+        SpringApplication application = new SpringApplication(BallApplication.class);
         application.setBannerMode(Banner.Mode.OFF);
         application.run(args);
         
