@@ -1,5 +1,6 @@
 package com.ball.data.crawler;
 
+import com.ball.data.utils.PropertyUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -9,12 +10,12 @@ import java.io.IOException;
 
 public class SohuCrawler {
 
-    private static final String sohuURL = "http://sports.sohu.com/nba_a.shtml";
+    private static final String SOHU_URL = PropertyUtils.getString("sohu_url");
 
-    public void getBySohu(){
+    public void getBySohu() {
         Document doc;
         try {
-            doc = Jsoup.connect(sohuURL).get();
+            doc = Jsoup.connect(SOHU_URL).get();
             Elements listDiv = doc.getElementsByAttributeValue("class", "f14list");
             for (Element element : listDiv) {
                 Elements links = element.getElementsByTag("a");
