@@ -3,11 +3,12 @@ server:
   port: 8000
   context-path: "/ball-data"
   tomcat:
-    basedir: "ball-tomcat"
+    basedir:  "ball-tomcat"
     uri-encoding: "UTF-8"
-  connection-timeout: 500000000
+    max-connections: 20000
+    max-threads: 1000
     
-ribbon:  
+ribbon:
   ReadTimeout: 60000  
   ConnectTimeout: 60000
   MaxTotalConnections: 200
@@ -20,10 +21,3 @@ logging:
 spring:
   application:
     name: "ball-data"
-
-#健康检查
-management:
-  security:
-    enabled: false
-  port: 18082
-  context-path: "/"
