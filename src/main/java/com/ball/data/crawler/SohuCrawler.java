@@ -1,18 +1,28 @@
 package com.ball.data.crawler;
 
+import com.alibaba.rocketmq.client.producer.DefaultMQProducer;
+import com.alibaba.rocketmq.client.producer.SendResult;
+import com.alibaba.rocketmq.common.message.Message;
 import com.ball.data.utils.PropertyUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Date;
 
+@Component
 public class SohuCrawler {
 
     private static final String SOHU_URL = PropertyUtils.getString("sohu_url");
 
-    public void getBySohu() {
+    @Autowired
+    DefaultMQProducer defaultBallNewsProducer;
+
+    public void getUrlBySohu() {
         Document doc;
         try {
             doc = Jsoup.connect(SOHU_URL).get();
@@ -24,11 +34,12 @@ public class SohuCrawler {
                     String titleText = link.text().trim();
                     if(!linkHref.split("\\.")[0].equals("http://pic")) {
                         String[] sca = getBySohuContent(linkHref);
-                        if(sca != null) {
-                            //ballDAO.saveGripping(titleText, sca[0], linkHref, sca[1], sca[2], "3", 0);
-                        }else{
-                            //ballDAO.saveGripping(titleText, "", linkHref, "", "", "3", 0);
-                        }
+                        Message msg = new Message(
+                                "ball_news",    //topic
+                                "sohu",         //tag
+                                (new Date() + " sohu news").getBytes());
+                        SendResult sendResult = defaultBallNewsProducer.send(msg);
+                        System.out.println(sendResult);
                     }
                 }
             }
@@ -127,6 +138,6 @@ public class SohuCrawler {
 
     public static void main(String[] args){
         SohuCrawler crawler = new SohuCrawler();
-        crawler.getBySohu();
+        crawler.getUrlBySohu();
     }
 }

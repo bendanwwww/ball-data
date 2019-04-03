@@ -31,7 +31,10 @@ public class ConsumerFactory {
             @Override
             public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
                 MessageExt msg = msgs.get(0);
+                // 消息tag
+                String messageTag = msg.getTags();
                 // 消费逻辑
+
                 System.out.println(JSON.toJSONString(msg));
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
