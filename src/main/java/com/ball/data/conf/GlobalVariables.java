@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Service
@@ -15,7 +14,7 @@ public class GlobalVariables {
 
     public void initParam() {
         try {
-            HashMap<String, String> newsMap = (LinkedHashMap) YmlUtils.getString("news");
+            HashMap<String, String> newsMap = (HashMap) YmlUtils.getString("news");
             Iterator<String> it = newsMap.keySet().iterator();
             while (it.hasNext()) {
                 String newsKey = it.next();
