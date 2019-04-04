@@ -1,6 +1,7 @@
 package com.ball;
 
 
+import com.ball.data.conf.ApplicationStartup;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,6 +24,7 @@ public class BallApplication {
 
         SpringApplication application = new SpringApplication(BallApplication.class);
         application.setBannerMode(Banner.Mode.OFF);
+        application.addListeners(new ApplicationStartup());
         application.run(args);
         
     }

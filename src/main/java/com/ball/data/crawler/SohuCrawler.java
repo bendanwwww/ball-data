@@ -15,14 +15,15 @@ import java.io.IOException;
 import java.util.Date;
 
 @Component
-public class SohuCrawler {
+public class SohuCrawler implements CrawlerInterface{
 
     private static final String SOHU_URL = PropertyUtils.getString("sohu_url");
 
     @Autowired
     DefaultMQProducer defaultBallNewsProducer;
 
-    public void getUrlBySohu() {
+    @Override
+    public void getUrl() {
         Document doc;
         try {
             doc = Jsoup.connect(SOHU_URL).get();
@@ -33,11 +34,11 @@ public class SohuCrawler {
                     String linkHref = link.attr("href");
                     String titleText = link.text().trim();
                     if(!linkHref.split("\\.")[0].equals("http://pic")) {
-                        String[] sca = getBySohuContent(linkHref);
+                        String[] sca = getContent(linkHref);
                         Message msg = new Message(
                                 "ball_news",    //topic
                                 "sohu",         //tag
-                                (new Date() + " sohu news").getBytes());
+                                ("sohu url").getBytes());
                         SendResult sendResult = defaultBallNewsProducer.send(msg);
                         System.out.println(sendResult);
                     }
@@ -48,8 +49,8 @@ public class SohuCrawler {
         }
     }
 
-
-    private String[] getBySohuContent(String url){
+    @Override
+    public String[] getContent(String url){
         Document doc;
         String[] srcAndContent = new String[3];
         try {
@@ -138,6 +139,6 @@ public class SohuCrawler {
 
     public static void main(String[] args){
         SohuCrawler crawler = new SohuCrawler();
-        crawler.getUrlBySohu();
+        crawler.getUrl();
     }
 }

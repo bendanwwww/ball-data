@@ -8,6 +8,8 @@ import com.alibaba.rocketmq.client.consumer.listener.MessageListenerConcurrently
 import com.alibaba.rocketmq.client.exception.MQClientException;
 import com.alibaba.rocketmq.common.consumer.ConsumeFromWhere;
 import com.alibaba.rocketmq.common.message.MessageExt;
+import com.ball.data.conf.GlobalVariables;
+import com.ball.data.crawler.CrawlerInterface;
 import com.ball.data.utils.PropertyUtils;
 import org.springframework.context.annotation.Bean;
 
@@ -33,8 +35,11 @@ public class ConsumerFactory {
                 MessageExt msg = msgs.get(0);
                 // 消息tag
                 String messageTag = msg.getTags();
+                // 消息体
+                String msgBody = new String(msg.getBody());
                 // 消费逻辑
-
+                CrawlerInterface crawlerInterface = (CrawlerInterface) GlobalVariables.getObject(messageTag);
+                crawlerInterface.getContent(msgBody);
                 System.out.println(JSON.toJSONString(msg));
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }

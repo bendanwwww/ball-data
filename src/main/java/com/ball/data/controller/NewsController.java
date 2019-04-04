@@ -21,6 +21,6 @@ public class NewsController {
 
     @RequestMapping("/sohuNews")
     public void sohuNews() {
-        sohuCrawler.getUrlBySohu();
+        sohuCrawler.getUrl();
     }
 }
