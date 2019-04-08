@@ -7,7 +7,12 @@ server:
     uri-encoding: "UTF-8"
     max-connections: 20000
     max-threads: 1000
-    
+
+
+#指定mybatis映射文件的地址
+mybatis:
+  config-location: "classpath:mybatis/mybatis-config.xml"
+
 ribbon:
   ReadTimeout: 60000  
   ConnectTimeout: 60000
@@ -21,3 +26,8 @@ logging:
 spring:
   application:
     name: "ball-data"
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/ball
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
