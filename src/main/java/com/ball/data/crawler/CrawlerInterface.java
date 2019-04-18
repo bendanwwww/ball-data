@@ -4,5 +4,5 @@ public interface CrawlerInterface {
 
     public void getUrl();
 
-    public String[] getContent(String url);
+    public void getContent(String url);
 }

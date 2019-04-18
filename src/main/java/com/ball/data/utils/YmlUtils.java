@@ -1,6 +1,5 @@
 package com.ball.data.utils;
 
-import com.ball.data.conf.GlobalVariables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;

@@ -53,11 +53,10 @@ public class SohuCrawler implements CrawlerInterface{
     }
 
     @Override
-    public String[] getContent(String url) {
-//        Document doc;
-//        String[] srcAndContent = new String[3];
-//        try {
-//            doc = Jsoup.connect(url).get();
+    public void getContent(String url) {
+        Document doc;
+        try {
+            doc = Jsoup.connect(url).get();
 //            Elements conDiv = doc.getElementsByAttributeValue("itemprop", "articleBody");
 //            if(conDiv.size() > 0){
 //                Elements cons = conDiv.get(0).getElementsByTag("p");
@@ -134,12 +133,10 @@ public class SohuCrawler implements CrawlerInterface{
 //                }
 //
 //            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
         log.info("content: {}", url);
-        return null;
     }
 
     public static void main(String[] args) {

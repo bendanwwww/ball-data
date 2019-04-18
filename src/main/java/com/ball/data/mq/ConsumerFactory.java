@@ -11,6 +11,7 @@ import com.alibaba.rocketmq.common.message.MessageExt;
 import com.ball.data.conf.GlobalVariables;
 import com.ball.data.crawler.CrawlerInterface;
 import com.ball.data.utils.PropertyUtils;
+import com.ball.tools.UrlTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -42,10 +43,14 @@ public class ConsumerFactory {
                 // 消息tag
                 String messageTag = msg.getTags();
                 // 消息体
-                String msgBody = new String(msg.getBody());
+                String url = new String(msg.getBody());
+                // 判重校验
+                if(!UrlTools.validateRepeat(url)){
+                    return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                }
                 // 消费逻辑
                 CrawlerInterface crawlerInterface = (CrawlerInterface) GlobalVariables.getObject(messageTag);
-                crawlerInterface.getContent(msgBody);
+                crawlerInterface.getContent(url);
                 log.info("news mq consumer messageExt: {}", JSON.toJSONString(msg));
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
