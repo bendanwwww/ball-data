@@ -1,5 +1,8 @@
 package com.ball.data.utils;
 
+import com.ball.data.conf.GlobalVariables;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileInputStream;
@@ -8,6 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class YmlUtils {
+
+    private static final Logger log = LoggerFactory.getLogger(YmlUtils.class);
+
 
     private static String ymlUrl = "data.yml";
     private static Map<String, Object> ymlMap = new HashMap<String, Object>();
@@ -20,7 +26,7 @@ public class YmlUtils {
                 ymlMap = (HashMap) yaml.load(new FileInputStream(url.getFile()));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
     }
 

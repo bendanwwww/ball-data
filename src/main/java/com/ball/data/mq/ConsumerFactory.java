@@ -11,17 +11,23 @@ import com.alibaba.rocketmq.common.message.MessageExt;
 import com.ball.data.conf.GlobalVariables;
 import com.ball.data.crawler.CrawlerInterface;
 import com.ball.data.utils.PropertyUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
+@Configuration
 public class ConsumerFactory {
 
     private static final String MQ_ADDR = PropertyUtils.getString("mq_addr");
 
+    private static final Logger log = LoggerFactory.getLogger(ConsumerFactory.class);
+
     @Bean
     public DefaultMQPushConsumer defaultBallNewsConsumer() throws MQClientException {
-        DefaultMQPushConsumer ballNewsConsumer = new DefaultMQPushConsumer();
+        DefaultMQPushConsumer ballNewsConsumer = new DefaultMQPushConsumer("news-group");
         ballNewsConsumer.setNamesrvAddr(MQ_ADDR);
         // 设置消费topic
         ballNewsConsumer.subscribe("ball_news", "*");
@@ -40,7 +46,7 @@ public class ConsumerFactory {
                 // 消费逻辑
                 CrawlerInterface crawlerInterface = (CrawlerInterface) GlobalVariables.getObject(messageTag);
                 crawlerInterface.getContent(msgBody);
-                System.out.println(JSON.toJSONString(msg));
+                log.info("news mq consumer messageExt: {}", JSON.toJSONString(msg));
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
         });

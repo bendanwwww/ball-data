@@ -4,12 +4,16 @@ import com.alibaba.rocketmq.client.producer.DefaultMQProducer;
 import com.alibaba.rocketmq.client.producer.SendResult;
 import com.alibaba.rocketmq.common.message.Message;
 import com.ball.tools.ValidateTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
 @Component
 public class SendMessage {
+
+    private static final Logger log = LoggerFactory.getLogger(SendMessage.class);
 
     @Autowired
     DefaultMQProducer defaultBallNewsProducer;
@@ -25,6 +29,7 @@ public class SendMessage {
             if(ValidateTools.validateStrNull(topic, tag, url)){
                 Message msg = new Message(topic, tag, url.getBytes());
                 SendResult sendResult = defaultBallNewsProducer.send(msg);
+                log.info("send news mq: {}", sendResult);
                 System.out.println(sendResult);
                 return Boolean.TRUE;
             }else{
@@ -32,8 +37,8 @@ public class SendMessage {
             }
 
         }catch (Exception e) {
-            e.printStackTrace();
-            return Boolean.FALSE;
+            log.error(e.getMessage());
         }
+        return Boolean.FALSE;
     }
 }

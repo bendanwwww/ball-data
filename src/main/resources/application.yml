@@ -20,6 +20,7 @@ ribbon:
   MaxConnectionsPerHost: 200
 
 logging:
+  config: classpath:log4j2.xml
   level:
     root: "INFO"
 
