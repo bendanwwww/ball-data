@@ -1,9 +1,8 @@
 package com.ball.data.crawler;
 
-import com.alibaba.rocketmq.client.producer.DefaultMQProducer;
-import com.alibaba.rocketmq.client.producer.SendResult;
-import com.alibaba.rocketmq.common.message.Message;
+import com.ball.data.mq.SendMessage;
 import com.ball.data.utils.PropertyUtils;
+import com.ball.tools.ValidateTools;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Date;
 
 @Component
 public class SohuCrawler implements CrawlerInterface{
@@ -20,29 +18,29 @@ public class SohuCrawler implements CrawlerInterface{
     private static final String SOHU_URL = PropertyUtils.getString("sohu_url");
 
     @Autowired
-    DefaultMQProducer defaultBallNewsProducer;
+    SendMessage sendMessage;
+
 
     @Override
     public void getUrl() {
         Document doc;
         try {
             doc = Jsoup.connect(SOHU_URL).get();
-            Elements listDiv = doc.getElementsByAttributeValue("class", "f14list");
-            for (Element element : listDiv) {
-                Elements links = element.getElementsByTag("a");
-                for (Element link : links) {
-                    String linkHref = link.attr("href");
-                    String titleText = link.text().trim();
-                    if(!linkHref.split("\\.")[0].equals("http://pic")) {
-                        String[] sca = getContent(linkHref);
-                        Message msg = new Message(
-                                "ball_news",    //topic
-                                "sohu",         //tag
-                                ("sohu url").getBytes());
-                        SendResult sendResult = defaultBallNewsProducer.send(msg);
-                        System.out.println(sendResult);
+            // 新闻li
+            Elements newsLi = doc.getElementsByAttributeValue("class", "feed-item");
+            for (Element element : newsLi) {
+                // 新闻链接
+                String newHref = null;
+                Elements newsDetails = element.getElementsByTag("article");
+                if(ValidateTools.validateListNull(newsDetails)) {
+                    Element newsDetail = newsDetails.get(0);
+                    Elements newHrefs = newsDetail.getElementsByTag("a");
+                    if(ValidateTools.validateListNull(newHrefs)) {
+                        newHref = newHrefs.get(0).attr("href");
+                        System.out.println(newHref);
                     }
                 }
+                sendMessage.sendNewsMessage("ball_news", "sohu", newHref);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,7 +48,7 @@ public class SohuCrawler implements CrawlerInterface{
     }
 
     @Override
-    public String[] getContent(String url){
+    public String[] getContent(String url) {
         Document doc;
         String[] srcAndContent = new String[3];
         try {

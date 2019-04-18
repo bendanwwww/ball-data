@@ -28,6 +28,8 @@ public class News {
     private String isTop;
     /**  */
     private String clicks;
+    /**  */
+    private Integer newsType;
 
     public Integer getId() {
         return id;
@@ -131,5 +133,13 @@ public class News {
 
     public void setClicks(String clicks) {
         this.clicks = clicks;
+    }
+
+    public Integer getNewsType() {
+        return newsType;
+    }
+
+    public void setNewsType(Integer newsType) {
+        this.newsType = newsType;
     }
 }
