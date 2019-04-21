@@ -1,34 +1,36 @@
 package com.ball.data.domain;
 
+import java.util.Date;
+
 public class News {
 
     /**  */
     private Integer id;
-    /**  */
+    /** 标题 */
     private String title;
-    /**  */
+    /** 链接 */
     private String href;
-    /**  */
+    /** 摘要1 */
     private String abstract1;
-    /**  */
+    /** 摘要2 */
     private String abstract2;
     /**  */
     private String pureText;
-    /**  */
+    /** 封面图片 */
     private String coverPic;
-    /**  */
+    /** [url1,url2,url3,.....] */
     private String newspic;
-    /**  */
+    /** 内容 */
     private String content;
-    /**  */
-    private String getdate;
-    /**  */
+    /** 抓取时间 */
+    private Date getDate;
+    /** 来源 */
     private String source;
-    /**  */
+    /** 是否为头条(0: 否 1: 是) */
     private String isTop;
-    /**  */
-    private String clicks;
-    /**  */
+    /** 点击量 */
+    private Integer clicks;
+    /** 新闻类型(0: 新闻 1: 图组) */
     private Integer newsType;
 
     public Integer getId() {
@@ -103,14 +105,6 @@ public class News {
         this.content = content;
     }
 
-    public String getGetdate() {
-        return getdate;
-    }
-
-    public void setGetdate(String getdate) {
-        this.getdate = getdate;
-    }
-
     public String getSource() {
         return source;
     }
@@ -127,19 +121,27 @@ public class News {
         this.isTop = isTop;
     }
 
-    public String getClicks() {
-        return clicks;
-    }
-
-    public void setClicks(String clicks) {
-        this.clicks = clicks;
-    }
-
     public Integer getNewsType() {
         return newsType;
     }
 
     public void setNewsType(Integer newsType) {
         this.newsType = newsType;
+    }
+
+    public Date getGetDate() {
+        return getDate;
+    }
+
+    public void setGetDate(Date getDate) {
+        this.getDate = getDate;
+    }
+
+    public Integer getClicks() {
+        return clicks;
+    }
+
+    public void setClicks(Integer clicks) {
+        this.clicks = clicks;
     }
 }

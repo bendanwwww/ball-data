@@ -2,19 +2,19 @@ package com.ball.data.dto;
 
 public class NewsDto {
 
-    /**  */
+    /** 标题 */
     private String title;
-    /**  */
+    /** 链接 */
     private String href;
-    /**  */
+    /** 封面图片 */
     private String coverPic;
-    /**  */
+    /** [url1,url2,url3,.....] */
     private String newspic;
-    /**  */
+    /** 内容 */
     private String content;
-    /**  */
+    /** 来源(0:china.nba,1:hupu,2:sina,3:sohu,4:qq) */
     private String source;
-    /**  */
+    /** 新闻类型(0: 新闻 1: 图组) */
     private Integer newsType;
 
     public String getTitle() {

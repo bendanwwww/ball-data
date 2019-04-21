@@ -1,6 +1,8 @@
 package com.ball.data.crawler;
 
+import com.ball.data.dto.NewsDto;
 import com.ball.data.mq.SendMessage;
+import com.ball.data.service.NewsService;
 import com.ball.data.utils.PropertyUtils;
 import com.ball.tools.UrlTools;
 import com.ball.tools.ValidateTools;
@@ -13,6 +15,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * sohu 爬虫
+ */
 @Component
 public class SohuCrawler implements CrawlerInterface{
 
@@ -22,7 +30,9 @@ public class SohuCrawler implements CrawlerInterface{
 
 
     @Autowired
-    SendMessage sendMessage;
+    private SendMessage sendMessage;
+    @Autowired
+    private NewsService newsService;
 
 
     @Override
@@ -57,86 +67,140 @@ public class SohuCrawler implements CrawlerInterface{
         Document doc;
         try {
             doc = Jsoup.connect(url).get();
-//            Elements conDiv = doc.getElementsByAttributeValue("itemprop", "articleBody");
-//            if(conDiv.size() > 0){
-//                Elements cons = conDiv.get(0).getElementsByTag("p");
-//                Elements imgs = conDiv.get(0).getElementsByAttributeValue("class", "fl-pic");
-//                String src = "";
-//                String content = "";
-//                String abstract1 = "";
-//                //获取新闻图片
-//                if(imgs.size() > 0){
-//                    src = imgs.get(0).getElementsByTag("img").get(0).attr("src");
-//                }else{
-//                    imgs = conDiv.get(0).getElementsByAttributeValue("class", "tableImg");
-//                    if(imgs.size() > 0){
-//                        src = imgs.get(0).getElementsByTag("img").get(0).attr("src");
-//                    }
-//                }
-//                //获取新闻内容
-//                int num = 0;
-//                for (Element link : cons) {
-//                    if(link.text() != null && !link.text().replaceAll("　", "").equals("")){
-//                        if(num == 0){
-//                            if(link.text().replaceAll("　", "").length() < 35){
-//                                abstract1 = link.text().replaceAll("　", "");
-//                            }else{
-//                                abstract1 = link.text().replaceAll("　", "").substring(0, 34) + "...";
-//                            }
-//                        }
-//                        content = content + link.text().replaceAll("　", "") + "<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";//新闻内容
-//                        num++;
-//                    }
-//                }
-//                srcAndContent[0] = content;
-//                srcAndContent[1] = src;
-//                srcAndContent[2] = abstract1;
-//                return srcAndContent;
-//            }else{
-//                conDiv = doc.getElementsByAttributeValue("class", "article");
-//                if(conDiv.size() > 0){
-//                    Elements cons = conDiv.get(0).getElementsByTag("p");
-//                    String src = "";
-//                    String content = "";
-//                    String abstract1 = "";
-//                    //获取新闻内容
-//                    int num = 0;
-//                    for (Element link : cons) {
-//                        if(link.getElementsByAttributeValue("data-role", "original-title").size() > 0){
-//                            continue;
-//                        }
-//                        if(link.getElementsByAttributeValue("data-role", "editor-name").size() > 0){
-//                            continue;
-//                        }
-//                        if(link.getElementsByTag("img").size() > 0){
-//                            src = link.getElementsByTag("img").get(0).attr("src").replaceAll("//", "http://");
-//                            continue;
-//                        }
-//                        if(link.text() != null && !link.text().replaceAll("　", "").equals("")){
-//                            if(num == 0){
-//                                if(link.text().replaceAll("　", "").length() < 35){
-//                                    abstract1 = link.text().replaceAll("　", "");
-//                                }else{
-//                                    abstract1 = link.text().replaceAll("　", "").substring(0, 34) + "...";
-//                                }
-//                            }
-//                            content = content + link.text().replaceAll("　", "") + "<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";//新闻内容
-//                            num++;
-//                        }
-//                    }
-//                    srcAndContent[0] = content;
-//                    srcAndContent[1] = src;
-//                    srcAndContent[2] = abstract1;
-//                    return srcAndContent;
-//                }else{
-//                    return null;
-//                }
-//
-//            }
+            // 存库实体
+            NewsDto news = new NewsDto();
+            // 获取新闻类型
+            Integer newsType = newsType(url);
+            // 获取新闻标题
+            String title = "";
+            Elements newsTitleDiv = doc.getElementsByAttributeValue("class", "text-title");
+            if(ValidateTools.validateListNull(newsTitleDiv)) {
+                Elements newsTitleH1 = newsTitleDiv.get(0).getElementsByTag("h1");
+                if(ValidateTools.validateListNull(newsTitleH1)) {
+                    title = newsTitleH1.get(0).text();
+                }
+            }
+            // 获取新闻内容
+            // 封面图片
+            String coverPic = "";
+            // 详情图片
+            List<String> newsPicList = new ArrayList<String>();
+            // 文字详情
+            String content = "";
+            // 图组和新闻分开处理
+            switch (newsType) {
+                // 新闻
+                case 0:
+                    Elements newsDetails = doc.getElementsByTag("article");
+                    if(ValidateTools.validateListNull(newsDetails)) {
+                        Elements newContentP = newsDetails.get(0).getElementsByTag("p");
+                        // 获取详情
+                        if(ValidateTools.validateListNull(newContentP)) {
+                            StringBuffer contentTmp = new StringBuffer();
+                            for(Element p : newContentP){
+                                // 处理无需文字
+                                String notNeedClass = "editor-name";
+                                if(notNeedClass.equals(p.attr("data-role"))) {
+                                    continue;
+                                }
+                                // 如果是图片
+                                // 图片 class
+                                String imgClass = "ql-align-center";
+                                if(imgClass.equals(p.attr("class"))) {
+                                    Elements imgs = p.getElementsByTag("img");
+                                    if(ValidateTools.validateListNull(imgs)) {
+                                        // 图片占位符
+                                        contentTmp.append("{");
+                                        contentTmp.append(newsPicList.size());
+                                        contentTmp.append("}");
+                                        // 拼装图片
+                                        String imgUrl = imgs.attr("src");
+                                        newsPicList.add(imgUrl);
+                                    }
+                                }else{
+                                    // 如果是文字
+                                    String text = p.text();
+                                    // 段落开头缩进
+                                    contentTmp.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+                                    //具体文字
+                                    contentTmp.append(text);
+                                }
+                                // 添加换行符
+                                contentTmp.append("<br/>");
+                                content = contentTmp.toString();
+                            }
+                        }
+                    }
+                    break;
+                // 图组
+                case 1:
+                    // 获取图片
+                    Elements newsPictures = doc.getElementsByAttributeValue("class", "pic-area");
+                    if(ValidateTools.validateListNull(newsPictures)) {
+                        Elements pics = newsPictures.get(0).getElementsByTag("img");
+                        if(ValidateTools.validateListNull(newsPictures)){
+                            for(Element img : pics){
+                                newsPicList.add(img.attr("src"));
+                            }
+                        }
+                    }
+                    // 获取文字
+                    Elements newsTexts = doc.getElementsByAttributeValue("class", "txt");
+                    if(ValidateTools.validateListNull(newsTexts)) {
+                        Elements newContentP = newsPictures.get(0).getElementsByTag("p");
+                        if(ValidateTools.validateListNull(newContentP)) {
+                            StringBuffer contentTmp = new StringBuffer();
+                            for(int i = 0 ; i < newContentP.size() ; i++) {
+                                // 拼装详情
+                                String text = newContentP.get(i).text();
+                                // 文字
+                                contentTmp.append(text);
+                                // 图片占位符
+                                contentTmp.append("{");
+                                contentTmp.append(i);
+                                contentTmp.append("}");
+                                // 添加换行符
+                                contentTmp.append("<br/>");
+                                content = contentTmp.toString();
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            // 拼装实体
+            news.setTitle(title);
+            news.setHref(url);
+            news.setNewsType(newsType);
+            // TODO
+            news.setSource("sohu");
+            if(ValidateTools.validateListNull(newsPicList)){
+                news.setCoverPic(newsPicList.get(0));
+                news.setNewspic(newsPicList.toString());
+            }
+            // 入库
+            newsService.saveNews(news);
+
         } catch (Exception e) {
             log.error(e.getMessage());
         }
         log.info("content: {}", url);
+    }
+
+
+    /**
+     * 判断是图组还是新闻
+     * @param url
+     * @return  0: 新闻 1: 图组
+     */
+    private Integer newsType(String url){
+        if(url.contains("picture")){
+            return 1;
+        }else{
+            return 0;
+        }
     }
 
     public static void main(String[] args) {
