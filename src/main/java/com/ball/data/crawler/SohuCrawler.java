@@ -1,5 +1,6 @@
 package com.ball.data.crawler;
 
+import com.alibaba.fastjson.JSON;
 import com.ball.data.dto.NewsDto;
 import com.ball.data.mq.SendMessage;
 import com.ball.data.service.NewsService;
@@ -71,15 +72,9 @@ public class SohuCrawler implements CrawlerInterface{
             NewsDto news = new NewsDto();
             // 获取新闻类型
             Integer newsType = newsType(url);
-            // 获取新闻标题
-            String title = "";
-            Elements newsTitleDiv = doc.getElementsByAttributeValue("class", "text-title");
-            if(ValidateTools.validateListNull(newsTitleDiv)) {
-                Elements newsTitleH1 = newsTitleDiv.get(0).getElementsByTag("h1");
-                if(ValidateTools.validateListNull(newsTitleH1)) {
-                    title = newsTitleH1.get(0).text();
-                }
-            }
+
+
+
             // 获取新闻内容
             // 封面图片
             String coverPic = "";
@@ -87,10 +82,21 @@ public class SohuCrawler implements CrawlerInterface{
             List<String> newsPicList = new ArrayList<String>();
             // 文字详情
             String content = "";
+            // 新闻标题
+            String title = "";
             // 图组和新闻分开处理
             switch (newsType) {
                 // 新闻
                 case 0:
+                    // 获取新闻标题
+                    Elements newsTitleDiv = doc.getElementsByAttributeValue("class", "text-title");
+                    if(ValidateTools.validateListNull(newsTitleDiv)) {
+                        Elements newsTitleH1 = newsTitleDiv.get(0).getElementsByTag("h1");
+                        if(ValidateTools.validateListNull(newsTitleH1)) {
+                            title = newsTitleH1.get(0).text();
+                        }
+                    }
+                    // 新闻内容
                     Elements newsDetails = doc.getElementsByTag("article");
                     if(ValidateTools.validateListNull(newsDetails)) {
                         Elements newContentP = newsDetails.get(0).getElementsByTag("p");
@@ -134,6 +140,11 @@ public class SohuCrawler implements CrawlerInterface{
                     break;
                 // 图组
                 case 1:
+                    // 获取新闻标题
+                    Elements picTitleDiv = doc.getElementsByAttributeValue("id", "article-title-hash");
+                    if(ValidateTools.validateListNull(picTitleDiv)) {
+                        title = picTitleDiv.get(0).text();
+                    }
                     // 获取图片
                     Elements newsPictures = doc.getElementsByAttributeValue("class", "pic-area");
                     if(ValidateTools.validateListNull(newsPictures)) {
@@ -174,12 +185,14 @@ public class SohuCrawler implements CrawlerInterface{
             news.setTitle(title);
             news.setHref(url);
             news.setNewsType(newsType);
+            news.setContent(content);
             // TODO
             news.setSource("sohu");
             if(ValidateTools.validateListNull(newsPicList)){
                 news.setCoverPic(newsPicList.get(0));
                 news.setNewspic(newsPicList.toString());
             }
+            log.info(JSON.toJSONString(news));
             // 入库
             newsService.saveNews(news);
 
@@ -205,6 +218,6 @@ public class SohuCrawler implements CrawlerInterface{
 
     public static void main(String[] args) {
         CrawlerInterface crawler = new SohuCrawler();
-        crawler.getUrl();
+        crawler.getContent("http://www.sohu.com/a/309384725_458722?sec=wd");
     }
 }
