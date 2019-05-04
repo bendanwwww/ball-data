@@ -3,7 +3,7 @@
 
     <!-- 可以定义一些变量 -->
     <Properties>
-        <Property name="logFileName">logs/ball-log.log</Property>
+        <Property name="logFileName"></Property>
         <Property name="errorFileName">logs/error.log</Property>
     </Properties>
 
@@ -13,7 +13,7 @@
             <PatternLayout pattern="%d %p [%t] %C{1.} %L %X{sessionId}-%X{deviceid} - %m%n"/>
         </Console>
         <File name="ball-log" fileName="${logFileName}" append="true">
-            <PatternLayout pattern="%d %p [%t] %C{1.} %L %X{sessionId}-%X{deviceid} - %m%n"/>
+            logs/ball-log.log           <PatternLayout pattern="%d %p [%t] %C{1.} %L %X{sessionId}-%X{deviceid} - %m%n"/>
         </File>
         <File name="error" fileName="${errorFileName}" append="true">
             <PatternLayout pattern="%d %p [%t] %C{1.} %L %X{sessionId}-%X{deviceid} - %m%n"/>

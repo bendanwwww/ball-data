@@ -14,12 +14,12 @@ public class News {
     private String abstract1;
     /** 摘要2 */
     private String abstract2;
-    /**  */
+    /** 纯文本 */
     private String pureText;
     /** 封面图片 */
     private String coverPic;
     /** [url1,url2,url3,.....] */
-    private String newspic;
+    private String newsPic;
     /** 内容 */
     private String content;
     /** 抓取时间 */
@@ -27,7 +27,7 @@ public class News {
     /** 来源 */
     private String source;
     /** 是否为头条(0: 否 1: 是) */
-    private String isTop;
+    private Integer isTop;
     /** 点击量 */
     private Integer clicks;
     /** 新闻类型(0: 新闻 1: 图组) */
@@ -89,12 +89,12 @@ public class News {
         this.coverPic = coverPic;
     }
 
-    public String getNewspic() {
-        return newspic;
+    public String getNewsPic() {
+        return newsPic;
     }
 
-    public void setNewspic(String newspic) {
-        this.newspic = newspic;
+    public void setNewsPic(String newspic) {
+        this.newsPic = newspic;
     }
 
     public String getContent() {
@@ -113,11 +113,11 @@ public class News {
         this.source = source;
     }
 
-    public String getIsTop() {
+    public Integer getIsTop() {
         return isTop;
     }
 
-    public void setIsTop(String isTop) {
+    public void setIsTop(Integer isTop) {
         this.isTop = isTop;
     }
 
@@ -144,4 +144,6 @@ public class News {
     public void setClicks(Integer clicks) {
         this.clicks = clicks;
     }
+
+
 }

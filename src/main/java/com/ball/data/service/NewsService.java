@@ -4,7 +4,7 @@ import com.ball.data.domain.News;
 import com.ball.data.dto.NewsDto;
 import com.ball.data.mapper.NewsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
@@ -12,7 +12,7 @@ import java.util.Date;
  * 新闻相关
  */
 
-@Component
+@Service
 public class NewsService {
 
     @Autowired
@@ -28,14 +28,16 @@ public class NewsService {
         News news = new News();
         news.setTitle(newsDto.getTitle());
         news.setHref(newsDto.getHref());
-        news.setCoverPic(newsDto.getContent());
-        news.setNewspic(newsDto.getNewspic());
+        news.setCoverPic(newsDto.getCoverPic());
+        news.setNewsPic(newsDto.getNewsPic());
         news.setContent(newsDto.getContent());
+        news.setPureText(newsDto.getPureContent());
         news.setGetDate(new Date());
-        news.setSource(news.getSource());
+        news.setSource(newsDto.getSource());
         news.setClicks(0);
-        news.setNewsType(news.getNewsType());
+        news.setNewsType(newsDto.getNewsType());
         // TODO
+        news.setIsTop(0);
         news.setAbstract1("");
         news.setAbstract2("");
         newsMapper.insertNews(news);

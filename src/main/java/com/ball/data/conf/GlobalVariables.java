@@ -1,6 +1,6 @@
 package com.ball.data.conf;
 
-import com.ball.data.mq.ConsumerFactory;
+import com.ball.data.utils.BeanUtil;
 import com.ball.data.utils.YmlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +10,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * 初始化爬虫相关bean
+ *
+ * @author lsy
+ */
 @Service
 public class GlobalVariables {
 
@@ -24,7 +29,8 @@ public class GlobalVariables {
             while (it.hasNext()) {
                 String newsKey = it.next();
                 String classAddr = newsMap.get(newsKey);
-                Object obj = Class.forName(classAddr).newInstance();
+                // 获取相关bean
+                Object obj = BeanUtil.getBean(Class.forName(classAddr));
                 paramsMap.put(newsKey, obj);
             }
         }catch (Exception e){

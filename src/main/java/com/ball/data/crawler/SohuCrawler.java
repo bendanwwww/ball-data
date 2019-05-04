@@ -59,6 +59,7 @@ public class SohuCrawler implements CrawlerInterface{
                 sendMessage.sendNewsMessage("ball_news", "sohu", newHref);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             log.error(e.getMessage());
         }
     }
@@ -73,8 +74,6 @@ public class SohuCrawler implements CrawlerInterface{
             // 获取新闻类型
             Integer newsType = newsType(url);
 
-
-
             // 获取新闻内容
             // 封面图片
             String coverPic = "";
@@ -82,6 +81,8 @@ public class SohuCrawler implements CrawlerInterface{
             List<String> newsPicList = new ArrayList<String>();
             // 文字详情
             String content = "";
+            // 纯文本
+            String pureContent = "";
             // 新闻标题
             String title = "";
             // 图组和新闻分开处理
@@ -103,6 +104,7 @@ public class SohuCrawler implements CrawlerInterface{
                         // 获取详情
                         if(ValidateTools.validateListNull(newContentP)) {
                             StringBuffer contentTmp = new StringBuffer();
+                            StringBuffer pureContentTmp = new StringBuffer();
                             for(Element p : newContentP){
                                 // 处理无需文字
                                 String notNeedClass = "editor-name";
@@ -130,10 +132,12 @@ public class SohuCrawler implements CrawlerInterface{
                                     contentTmp.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
                                     //具体文字
                                     contentTmp.append(text);
+                                    pureContentTmp.append(text);
                                 }
                                 // 添加换行符
                                 contentTmp.append("<br/>");
                                 content = contentTmp.toString();
+                                pureContent = pureContentTmp.toString();
                             }
                         }
                     }
@@ -160,12 +164,16 @@ public class SohuCrawler implements CrawlerInterface{
                     if(ValidateTools.validateListNull(newsTexts)) {
                         Elements newContentP = newsPictures.get(0).getElementsByTag("p");
                         if(ValidateTools.validateListNull(newContentP)) {
+                            // html文本
                             StringBuffer contentTmp = new StringBuffer();
+                            // 纯文本
+                            StringBuffer pureContentTmp = new StringBuffer();
                             for(int i = 0 ; i < newContentP.size() ; i++) {
                                 // 拼装详情
                                 String text = newContentP.get(i).text();
                                 // 文字
                                 contentTmp.append(text);
+                                pureContentTmp.append(text);
                                 // 图片占位符
                                 contentTmp.append("{");
                                 contentTmp.append(i);
@@ -173,6 +181,7 @@ public class SohuCrawler implements CrawlerInterface{
                                 // 添加换行符
                                 contentTmp.append("<br/>");
                                 content = contentTmp.toString();
+                                pureContent = pureContentTmp.toString();
                             }
                         }
                     }
@@ -186,17 +195,19 @@ public class SohuCrawler implements CrawlerInterface{
             news.setHref(url);
             news.setNewsType(newsType);
             news.setContent(content);
-            // TODO
+            news.setPureContent(pureContent);
+            // TODO new type
             news.setSource("sohu");
             if(ValidateTools.validateListNull(newsPicList)){
                 news.setCoverPic(newsPicList.get(0));
-                news.setNewspic(newsPicList.toString());
+                news.setNewsPic(newsPicList.toString());
             }
             log.info(JSON.toJSONString(news));
             // 入库
             newsService.saveNews(news);
 
         } catch (Exception e) {
+            e.printStackTrace();
             log.error(e.getMessage());
         }
         log.info("content: {}", url);

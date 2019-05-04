@@ -5,10 +5,10 @@
 
 	<insert id="insertNews" parameterType="com.ball.data.domain.News">
 		insert into news (id , title , href , abstract1 , abstract2 , pureText , coverPic ,
-		newspic , content , getdate , source , isTop, clicks , newsType
+		newsPic , content , getDate , source , isTop, clicks , newsType
 		) values (
 		#{id} , #{title} , #{href} , #{abstract1} , #{abstract2} , #{pureText} , #{coverPic} ,
-		#{newspic} , #{content} , #{getdate} , #{source} , #{isTop} , #{clicks} , #{newsType}
+		#{newsPic} , #{content} , #{getDate} , #{source} , #{isTop} , #{clicks} , #{newsType}
 		)
 	</insert>
 

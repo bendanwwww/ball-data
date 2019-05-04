@@ -9,9 +9,11 @@ public class NewsDto {
     /** 封面图片 */
     private String coverPic;
     /** [url1,url2,url3,.....] */
-    private String newspic;
-    /** 内容 */
+    private String newsPic;
+    /** html内容 */
     private String content;
+    /** 纯文本 */
+    private String pureContent;
     /** 来源(0:china.nba,1:hupu,2:sina,3:sohu,4:qq) */
     private String source;
     /** 新闻类型(0: 新闻 1: 图组) */
@@ -41,12 +43,12 @@ public class NewsDto {
         this.coverPic = coverPic;
     }
 
-    public String getNewspic() {
-        return newspic;
+    public String getNewsPic() {
+        return newsPic;
     }
 
-    public void setNewspic(String newspic) {
-        this.newspic = newspic;
+    public void setNewsPic(String newspic) {
+        this.newsPic = newspic;
     }
 
     public String getContent() {
@@ -71,5 +73,13 @@ public class NewsDto {
 
     public void setNewsType(Integer newsType) {
         this.newsType = newsType;
+    }
+
+    public String getPureContent() {
+        return pureContent;
+    }
+
+    public void setPureContent(String pureContent) {
+        this.pureContent = pureContent;
     }
 }

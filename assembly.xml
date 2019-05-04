@@ -1,0 +1,20 @@
+<assembly>
+    <id>production-dir</id>
+    <formats>
+        <format>dir</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <fileSets>
+        <fileSet>
+            <directory>src/main/resources</directory>
+            <outputDirectory>conf</outputDirectory>
+        </fileSet>
+    </fileSets>
+    <files>
+        <file>
+            <source>target/${artifactId}-${version}.jar</source>
+            <outputDirectory>.</outputDirectory>
+            <destName>${artifactId}.jar</destName>
+        </file>
+    </files>
+</assembly>

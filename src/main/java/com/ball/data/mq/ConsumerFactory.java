@@ -14,6 +14,7 @@ import com.ball.data.utils.PropertyUtils;
 import com.ball.tools.UrlTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,6 +26,9 @@ public class ConsumerFactory {
     private static final String MQ_ADDR = PropertyUtils.getString("mq_addr");
 
     private static final Logger log = LoggerFactory.getLogger(ConsumerFactory.class);
+
+    @Autowired
+    private UrlTools urlTools;
 
     @Bean
     public DefaultMQPushConsumer defaultBallNewsConsumer() throws MQClientException {
@@ -45,7 +49,7 @@ public class ConsumerFactory {
                 // 消息体
                 String url = new String(msg.getBody());
                 // 判重校验
-                if(!UrlTools.validateRepeat(url)){
+                if(!urlTools.validateRepeat(url)){
                     return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
                 }
                 // 消费逻辑

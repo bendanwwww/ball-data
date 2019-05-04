@@ -28,7 +28,7 @@ spring:
   application:
     name: "ball-data"
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/ball
+    url: jdbc:mysql://127.0.0.1:3306/ball?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver
@@ -36,7 +36,7 @@ spring:
     host: 47.254.31.135
     port: 6379
     password:
-    timeout: 1000
+    timeout: 10000
     pool:
       max-active: 200
       max-wait: -1
